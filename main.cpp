@@ -50,24 +50,7 @@ class Maze{
 
     vector<vector<vector<string>>> initializeMaze(ifstream& file, vector<int>& dimensions, vector<int>& start, vector<int>& goal);
 
-    void moveN(){
-        current[2] += 1;
-    }
-    void moveE(){
-        current[1] += 1;
-    }
-    void moveS(){
-        current[2] -= 1;
-    }
-    void moveW(){
-        current[1] -= 1;
-    }
-    void moveU(){
-        current[0] += 1;
-    }
-    void moveD(){
-        current[0] -= 1;
-    }
+
 
 };
 
@@ -102,12 +85,66 @@ vector<vector<vector<string>>> initializeMaze(ifstream& file, vector<vector<int>
     return maze;
 }
 
+void moveCurrent(int move, vector<int>& current){
+    if(move == 0){
+        current[2] += 1;
+    }
+    else if(move == 1){
+        current[1] += 1;
+    }
+    else if(move == 2){
+        current[2] -= 1;
+    }
+    else if(move == 3){
+        current[1] -= 1;
+    }
+    else if(move == 4){
+        current[0] += 1;
+    }
+    else if(move == 5){
+        current[0] -= 1;
+    }
+
+}
+
+vector<string> solve(vector<vector<int>> format, vector<vector<vector<string>>> maze){
+    vector<int> current;
+    vector<int> start;
+    vector<int> goal;
+
+    vector<vector<vector<int>>> discovered(format[0][0], vector<vector<int>>(format[1][0],vector<int>(format[2][0], 0)));
+
+    vector<string> answer;
+
+
+    for (int i = 0; i < 3; i++){
+        current[i] = format[i][1];
+        start[i] = format[i][1];
+        goal[i] = format[i][2];
+    }
+
+    
+
+    while (current != goal){
+        int option = maze[current[0]][current[1]][current[2]].find('1');
+
+        if(discovered[current[0]][current[1]][current[2]] == 0){
+            option = maze[current[0]][current[1]][current[2]].find('1');
+            moveCurrent(option, current);
+        }
+        else if(discovered[current[0]][current[1]][current[2]] == 1){
+            option = maze[current[0]][current[1]][current[2]].find('1', option);
+        }
+    }
+
+}
 
 
 int main(){
 
     ifstream file("input.txt");
 
+    Maze ;
 
     vector<vector<int>> format = getFormat(file);
 
