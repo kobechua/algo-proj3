@@ -135,7 +135,7 @@ vector<string> solve(vector<vector<int>> format, vector<vector<vector<string>>> 
             moveCurrent(option, current);
         }
         else if(discovered[current[0]][current[1]][current[2]] == 1){
-            option = maze[current[0]][current[1]][current[2]].find('1', option);
+            option = maze[current[0]][current[1]][current[2]].find('1', option+1);
         }
     }
 
@@ -161,8 +161,6 @@ int main(){
     for (int i = 0; i < 3; i++){
         current[i] = format[i][1];
     }
-
-
 
     moveCurrent(2, current);
 
