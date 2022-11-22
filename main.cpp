@@ -5,6 +5,7 @@
 
 using namespace std;
 
+//DEBUG FUNCTIONS
 
 void printFile(ifstream &file){
 
@@ -39,6 +40,8 @@ void printMaze(vector<vector<vector<string>>> maze){
         }
 }
 
+//
+
 class Maze{
     vector<int> dimensions;
     vector<int> start;
@@ -54,6 +57,7 @@ class Maze{
 
 };
 
+//Gets formatting 3x3 input
 vector<vector<int>> getFormat(ifstream& file){
     vector<vector<int>> format(3, vector<int>(3)); 
     int number = 0;
@@ -69,6 +73,7 @@ vector<vector<int>> getFormat(ifstream& file){
     return format;
 }
 
+//Get maze information, formats to l x r x c
 vector<vector<vector<string>>> initializeMaze(ifstream& file, vector<vector<int>> format){
     vector<vector<vector<string>>> maze(format[0][0], vector<vector<string>>(format[2][0], vector<string>(format[1][0], ""))); 
 
@@ -85,6 +90,7 @@ vector<vector<vector<string>>> initializeMaze(ifstream& file, vector<vector<int>
     return maze;
 }
 
+//Get next move indices of maze cell
 vector<int> getIndices(string input){
     vector<int> indices;
     for(size_t i = 0; i < input.size(); i++){
@@ -95,6 +101,7 @@ vector<int> getIndices(string input){
     return indices;
 }
 
+//move current maze based on input "move" and current location
 void moveCurrent(int move, vector<int>& current){
     cout << "Moving: " << current[0] << ", " << current[1] << ", " << current[2] << endl;
     if(move == 0){
@@ -119,6 +126,7 @@ void moveCurrent(int move, vector<int>& current){
 
 }
 
+//find path from start coordinates to goal coordinates
 vector<string> solve(vector<vector<int>> format, vector<vector<vector<string>>> maze){
     vector<int> current(3);
     vector<int> start(3);
@@ -140,30 +148,38 @@ vector<string> solve(vector<vector<int>> format, vector<vector<vector<string>>> 
     while (current != goal){
         int option = maze[current[0]][current[1]][current[2]].find('1', 0);
 
-        getIndices(maze[current[0]][current[1]][current[2]]);
+        vector<int> children = getIndices(maze[current[0]][current[1]][current[2]]);
 
         cout << option << endl;
 
-        if(discovered[current[0]][current[1]][current[2]] == 0){
-            discovered[current[0]][current[1]][current[2]] = 1;
-            // option = maze[current[0]][current[1]][current[2]].find('1');
-            moveCurrent(option, current);
-            cout << option << endl;
+        for (size_t i = 0; i < children.size();i++){
+            if (discovered[current[0]][current[1]][current[2]] == 0){
+                discovered[current[0]][current[1]][current[2]] = 1;
+                moveCurrent(children[i], current);
+            }
+             else if(discovered[current[0]][current[1]][current[2]] == 1){
+                continue;
+             }
         }
-        else if(discovered[current[0]][current[1]][current[2]] == 1){
-            moveCurrent(option, current);
-            int newOption = maze[current[0]][current[1]][current[2]].find('1', option+1);
-            moveCurrent(newOption, current);
-            cout << option << endl;
-        }
+
+        // if(discovered[current[0]][current[1]][current[2]] == 0){
+        //     discovered[current[0]][current[1]][current[2]] = 1;
+        //     // option = maze[current[0]][current[1]][current[2]].find('1');
+        //     moveCurrent(option, current);
+        //     cout << option << endl;
+        // }
+        // else if(discovered[current[0]][current[1]][current[2]] == 1){
+        //     moveCurrent(option, current);
+        //     int newOption = maze[current[0]][current[1]][current[2]].find('1', option+1);
+        //     moveCurrent(newOption, current);
+        //     cout << option << endl;
+        // }
 
     }
-
     return answer;
-
 }
 
-
+//read file, run solve, return output
 int main(){
 
     ifstream file("input.txt");
