@@ -6,9 +6,7 @@
 using namespace std;
 
 
-void printFile(string filename){
-
-    ifstream file(filename);
+void printFile(ifstream &file){
 
     string line;
     if (file.is_open()){
@@ -20,6 +18,27 @@ void printFile(string filename){
 
 }
 
+void printFormat(vector<vector<int>> format){
+    for (int a = 0;a < 3; a++){
+        for (int b = 0; b < 3; b++){
+            cout << format[b][a] << " ";
+        }
+        cout << endl;
+    }
+}
+
+void printMaze(vector<vector<vector<string>>> maze){
+        for (int k = 0; k < 5; k++){
+            for (int j = 0; j < 4; j++){
+                for (int i = 0; i < 4; i++){
+                    cout << maze[k][i][j] << " ";
+                }
+                cout << endl;
+            }    
+            cout << endl;
+        }
+}
+
 class Maze{
     vector<int> dimensions;
     vector<int> start;
@@ -29,7 +48,7 @@ class Maze{
 
     vector<vector<int>> getFormat(ifstream& file);
 
-    vector<vector<vector<int>>> initializeMaze(ifstream& file, vector<int>& dimensions, vector<int>& start, vector<int>& goal);
+    vector<vector<vector<string>>> initializeMaze(ifstream& file, vector<int>& dimensions, vector<int>& start, vector<int>& goal);
 
     void moveN(){
         current[2] += 1;
@@ -67,8 +86,19 @@ vector<vector<int>> getFormat(ifstream& file){
     return format;
 }
 
-vector<vector<vector<int>>> initializeMaze(ifstream& file, vector<vector<int>>){
-    vector<vector<vector<int>>> maze;
+vector<vector<vector<string>>> initializeMaze(ifstream& file, vector<vector<int>> format){
+    vector<vector<vector<string>>> maze(format[0][0], vector<vector<string>>(format[2][0], vector<string>(format[1][0], ""))); 
+
+    string number = "";
+    for (int k = 0; k < format[0][0]; k++){
+        for (int j = 0; j < format[2][0]; j++){
+            for (int i = 0; i < format[1][0]; i++){
+                file >> number;
+                maze[k][i][j] = number;
+
+            }
+        }
+    }
     return maze;
 }
 
@@ -78,20 +108,17 @@ int main(){
 
     ifstream file("input.txt");
 
-    cout << "getformat" << endl;
 
     vector<vector<int>> format = getFormat(file);
 
-    cout << "printloop" << endl;
+    printFormat(format);
 
-    for (int j = 0; j < 3; j++){
-        for (int k = 0; k < 3; k++){
-            cout << format[k][j] << " ";
-        }
-        cout << endl;
-    }
 
-    cout << "closefile" << endl;
+
+    vector<vector<vector<string>>> maze = initializeMaze(file, format);
+    
+    printMaze(maze);
+
 
     file.close();
 
