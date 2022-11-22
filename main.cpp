@@ -50,7 +50,7 @@ class Maze{
 
     vector<vector<vector<string>>> initializeMaze(ifstream& file, vector<int>& dimensions, vector<int>& start, vector<int>& goal);
 
-
+    void moveCurrent(int move, vector<int>& current);
 
 };
 
@@ -86,6 +86,7 @@ vector<vector<vector<string>>> initializeMaze(ifstream& file, vector<vector<int>
 }
 
 void moveCurrent(int move, vector<int>& current){
+    cout << "Moving: " << current[0] << ", " << current[1] << ", " << current[2] << endl;
     if(move == 0){
         current[2] += 1;
     }
@@ -104,6 +105,7 @@ void moveCurrent(int move, vector<int>& current){
     else if(move == 5){
         current[0] -= 1;
     }
+    cout << "Moved to: " << current[0] << ", " << current[1] << ", " << current[2]<< endl;
 
 }
 
@@ -137,6 +139,8 @@ vector<string> solve(vector<vector<int>> format, vector<vector<vector<string>>> 
         }
     }
 
+    return answer;
+
 }
 
 
@@ -144,17 +148,23 @@ int main(){
 
     ifstream file("input.txt");
 
-    Maze ;
-
     vector<vector<int>> format = getFormat(file);
 
     printFormat(format);
 
-
-
     vector<vector<vector<string>>> maze = initializeMaze(file, format);
     
     printMaze(maze);
+
+    vector<int> current(3);
+
+    for (int i = 0; i < 3; i++){
+        current[i] = format[i][1];
+    }
+
+
+
+    moveCurrent(2, current);
 
 
     file.close();
