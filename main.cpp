@@ -85,16 +85,26 @@ vector<vector<vector<string>>> initializeMaze(ifstream& file, vector<vector<int>
     return maze;
 }
 
+vector<int> getIndices(string input){
+    vector<int> indices;
+    for(size_t i = 0; i < input.size(); i++){
+        if(input.substr(i, 1) == "1"){
+            indices.emplace_back(i);
+        }
+    }
+    return indices;
+}
+
 void moveCurrent(int move, vector<int>& current){
     cout << "Moving: " << current[0] << ", " << current[1] << ", " << current[2] << endl;
     if(move == 0){
-        current[2] += 1;
+        current[2] -= 1;
     }
     else if(move == 1){
         current[1] += 1;
     }
     else if(move == 2){
-        current[2] -= 1;
+        current[2] += 1;
     }
     else if(move == 3){
         current[1] -= 1;
@@ -110,13 +120,13 @@ void moveCurrent(int move, vector<int>& current){
 }
 
 vector<string> solve(vector<vector<int>> format, vector<vector<vector<string>>> maze){
-    vector<int> current;
-    vector<int> start;
-    vector<int> goal;
+    vector<int> current(3);
+    vector<int> start(3);
+    vector<int> goal(3);
 
     vector<vector<vector<int>>> discovered(format[0][0], vector<vector<int>>(format[1][0],vector<int>(format[2][0], 0)));
 
-    vector<string> answer;
+    vector<string> answer(format[0][0]*format[1][0]*format[2][0]);
 
 
     for (int i = 0; i < 3; i++){
@@ -128,15 +138,25 @@ vector<string> solve(vector<vector<int>> format, vector<vector<vector<string>>> 
     
 
     while (current != goal){
-        int option = maze[current[0]][current[1]][current[2]].find('1');
+        int option = maze[current[0]][current[1]][current[2]].find('1', 0);
+
+        getIndices(maze[current[0]][current[1]][current[2]]);
+
+        cout << option << endl;
 
         if(discovered[current[0]][current[1]][current[2]] == 0){
-            option = maze[current[0]][current[1]][current[2]].find('1');
+            discovered[current[0]][current[1]][current[2]] = 1;
+            // option = maze[current[0]][current[1]][current[2]].find('1');
             moveCurrent(option, current);
+            cout << option << endl;
         }
         else if(discovered[current[0]][current[1]][current[2]] == 1){
-            option = maze[current[0]][current[1]][current[2]].find('1', option+1);
+            moveCurrent(option, current);
+            int newOption = maze[current[0]][current[1]][current[2]].find('1', option+1);
+            moveCurrent(newOption, current);
+            cout << option << endl;
         }
+
     }
 
     return answer;
@@ -158,12 +178,13 @@ int main(){
 
     vector<int> current(3);
 
-    for (int i = 0; i < 3; i++){
-        current[i] = format[i][1];
+    vector<int> indices = getIndices("010001"); 
+
+    for (size_t i = 0; i< indices.size(); i++){
+        cout << indices[i] << endl;
     }
 
-    moveCurrent(2, current);
-
+    // vector<string> answer = solve(format, maze);
 
     file.close();
 
