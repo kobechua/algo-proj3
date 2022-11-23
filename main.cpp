@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <stack>
 
 using namespace std;
 
@@ -102,7 +103,8 @@ vector<int> getIndices(string input){
 }
 
 //move current maze based on input "move" and current location
-void moveCurrent(int move, vector<int>& current){
+vector<int> moveCurrent(int move, vector<int>& current){
+    vector<int> destination;
     cout << "Moving: " << current[0] << ", " << current[1] << ", " << current[2] << endl;
     if(move == 0){
         current[2] -= 1;
@@ -123,7 +125,8 @@ void moveCurrent(int move, vector<int>& current){
         current[0] -= 1;
     }
     cout << "Moved to: " << current[0] << ", " << current[1] << ", " << current[2]<< endl;
-
+    destination = current;
+    return destination;
 }
 
 //find path from start coordinates to goal coordinates
@@ -134,6 +137,8 @@ vector<string> solve(vector<vector<int>> format, vector<vector<vector<string>>> 
 
     vector<vector<vector<int>>> discovered(format[0][0], vector<vector<int>>(format[1][0],vector<int>(format[2][0], 0)));
 
+
+
     vector<string> answer(format[0][0]*format[1][0]*format[2][0]);
 
 
@@ -143,23 +148,24 @@ vector<string> solve(vector<vector<int>> format, vector<vector<vector<string>>> 
         goal[i] = format[i][2];
     }
 
-    
+    stack<vector<int>> childrenStack;
 
-    while (current != goal){
+    while (current != goal || childrenStack.empty()){
         int option = maze[current[0]][current[1]][current[2]].find('1', 0);
 
         vector<int> children = getIndices(maze[current[0]][current[1]][current[2]]);
 
         cout << option << endl;
 
-        for (size_t i = 0; i < children.size();i++){
+        if(discovered[current[0]][current[1]][current[2]] == 1){
+                continue;
+         }
+
+        for (size_t i = children.size(); i > 0;i--){
             if (discovered[current[0]][current[1]][current[2]] == 0){
                 discovered[current[0]][current[1]][current[2]] = 1;
-                moveCurrent(children[i], current);
+                childrenStack.push(moveCurrent(i, current));
             }
-             else if(discovered[current[0]][current[1]][current[2]] == 1){
-                continue;
-             }
         }
 
         // if(discovered[current[0]][current[1]][current[2]] == 0){
