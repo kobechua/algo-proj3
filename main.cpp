@@ -103,7 +103,7 @@ vector<int> getIndices(string input){
 }
 
 //move current maze based on input "move" and current location
-vector<int> moveCurrent(int move, vector<int>& current){
+vector<int> moveCurrent(int move, vector<int> current){
     vector<int> destination;
     cout << "Moving: " << current[0] << ", " << current[1] << ", " << current[2] << endl;
     if(move == 0){
@@ -124,9 +124,31 @@ vector<int> moveCurrent(int move, vector<int>& current){
     else if(move == 5){
         current[0] -= 1;
     }
-    cout << "Moved to: " << current[0] << ", " << current[1] << ", " << current[2]<< endl;
+    cout << "Moved to: " << current[0] << ", " << current[1] << ", " << current[2]<< "\n" <<endl;
     destination = current;
     return destination;
+}
+
+string convertMove(int move){
+    if(move == 0){
+        return "N";
+    }
+    else if(move == 1){
+        return "E";
+    }
+    else if(move == 2){
+        return "S";
+    }
+    else if(move == 3){
+        return "W";
+    }
+    else if(move == 4){
+        return "U";
+    }
+    else if(move == 5){
+        return "D";
+    }
+    else return ":(";
 }
 
 //find path from start coordinates to goal coordinates
@@ -149,39 +171,38 @@ vector<string> solve(vector<vector<int>> format, vector<vector<vector<string>>> 
     }
 
     stack<vector<int>> childrenStack;
+    
+    childrenStack.push(current);
 
-    while (current != goal || childrenStack.empty()){
-        int option = maze[current[0]][current[1]][current[2]].find('1', 0);
+    int totalmoves = 0;
 
-        vector<int> children = getIndices(maze[current[0]][current[1]][current[2]]);
+    while (!childrenStack.empty()){
+        vector<int> cur = childrenStack.top();
+        childrenStack.pop();
 
-        cout << option << endl;
+        
 
-        if(discovered[current[0]][current[1]][current[2]] == 1){
-                continue;
-         }
+        vector<int> children = getIndices(maze[cur[0]][cur[1]][cur[2]]);
 
-        for (size_t i = children.size(); i > 0;i--){
-            if (discovered[current[0]][current[1]][current[2]] == 0){
-                discovered[current[0]][current[1]][current[2]] = 1;
-                childrenStack.push(moveCurrent(i, current));
-            }
+
+        if (cur == goal){
+            break;
         }
 
-        // if(discovered[current[0]][current[1]][current[2]] == 0){
-        //     discovered[current[0]][current[1]][current[2]] = 1;
-        //     // option = maze[current[0]][current[1]][current[2]].find('1');
-        //     moveCurrent(option, current);
-        //     cout << option << endl;
-        // }
-        // else if(discovered[current[0]][current[1]][current[2]] == 1){
-        //     moveCurrent(option, current);
-        //     int newOption = maze[current[0]][current[1]][current[2]].find('1', option+1);
-        //     moveCurrent(newOption, current);
-        //     cout << option << endl;
-        // }
-
+        if(discovered[cur[0]][cur[1]][cur[2]] == 0){
+            discovered[cur[0]][cur[1]][cur[2]] = 1;
+         }
+        // for (size_t i = 0; i < children.size(); i++){
+        for (size_t i = children.size(); i > 0; --i){
+            vector<int> child = moveCurrent(children[i-1], cur);
+            if (discovered[child[0]][child[1]][child[2]] == 0){
+                totalmoves += 1;
+                answer.emplace_back(convertMove(children[i-1]));
+                childrenStack.push(child);
+            }
+        }
     }
+    cout << totalmoves << endl;
     return answer;
 }
 
@@ -198,15 +219,20 @@ int main(){
     
     printMaze(maze);
 
-    vector<int> current(3);
+    // vector<int> current(3);
 
-    vector<int> indices = getIndices("010001"); 
+    // vector<int> indices = getIndices("010001"); 
 
-    for (size_t i = 0; i< indices.size(); i++){
-        cout << indices[i] << endl;
+    // for (size_t i = 0; i < indices.size(); i++){
+    //     cout << indices[i] << endl;
+    // }
+
+    vector<string> answer = solve(format, maze);
+
+    for (size_t i = 0; i < answer.size(); i++){
+        cout << answer[i];
     }
-
-    // vector<string> answer = solve(format, maze);
+    
 
     file.close();
 
