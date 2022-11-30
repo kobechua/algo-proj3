@@ -119,27 +119,40 @@ int DFS(vector<int> current, vector<vector<vector<string>>> maze, vector<int> go
 int main(){
 
     ifstream file("input.txt");
-
-    vector<vector<int>> format = getFormat(file);
-    vector<vector<vector<string>>> maze = initializeMaze(file, format);
-
-    vector<int> start = {format[0][1],format[1][1], format[2][1]};
-    vector<int> goal = {format[0][2],format[1][2], format[2][2]};
-    vector<vector<vector<int>>> discovered(format[0][0], vector<vector<int>>(format[1][0],vector<int>(format[2][0], 0)));
-    
-    vector<string> answer;
-
-    DFS(start, maze, goal, discovered, answer, "");
-
-    file.close();
-
     ofstream output("output.txt");
 
-    for (size_t i = 1; i < answer.size(); i++){
-        output << answer[i] << " ";
+    int mazes = 0;
+    file >> mazes;
+
+    
+    if (file.is_open()){
+        for (int i = 0;i < mazes; i++){
+            vector<vector<int>> format = getFormat(file);
+            vector<vector<vector<string>>> maze = initializeMaze(file, format);
+
+            vector<int> start = {format[0][1],format[1][1], format[2][1]};
+            vector<int> goal = {format[0][2],format[1][2], format[2][2]};
+            vector<vector<vector<int>>> discovered(format[0][0], vector<vector<int>>(format[1][0],vector<int>(format[2][0], 0)));
+            
+            vector<string> answer;
+
+            DFS(start, maze, goal, discovered, answer, "");    
+
+            output << "Maze " << i+1 << ": ";
+
+            for (size_t i = 1; i < answer.size(); i++){
+                output << answer[i] << " ";
+            }
+            output << "\n";
+        }
+        output.close();
+    }
+    else{
+        cout << "Unable to open file";
+        return -1;
     }
 
-    output.close();
-
+    file.close();
+    
     return 0;
 }

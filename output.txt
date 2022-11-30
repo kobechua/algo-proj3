@@ -1,1 +1,3 @@
-W U N N D S E U S U W W N D W D N U U S U E U E D N U W D N U E E D W D W S D D S S U W U U U N N N 
+Maze 1: W U N N D S E U S U W W N D W D N U U S U E U E D N U W D N U E E D W D W S D D S S U W U U U N N N 
+Maze 2: U S D S E E N U U W D D N E U W U W S S E E 
+Maze 3: W U N N D S E U S U W W N D W D N U U S U E U E D N U W D N U E E D W D W S D D S S U W U U U N N N 
